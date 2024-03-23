@@ -14,9 +14,4 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="obj\Ozon.AnalyticalSales.Service.csproj.nuget.g.props" />
-      <Content Include="obj\Ozon.AnalyticalSales.Service.csproj.nuget.g.targets" />
-    </ItemGroup>
-
 </Project>
