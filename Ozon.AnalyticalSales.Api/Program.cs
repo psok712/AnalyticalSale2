@@ -5,15 +5,13 @@ using Ozon.AnalyticalSales.Domain;
 using Ozon.AnalyticalSales.Domain.Interfaces;
 using Ozon.AnalyticalSales.Service;
 
-var path = Path.Combine(AppContext.BaseDirectory, @"..\..\..\appsettings.json").SettingSeparatorOs();
-
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile(path, false, true)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange:true)
     .Build();
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.Configure<ApplicationOptions>(configuration.GetSection(nameof(ApplicationOptions)));
+builder.Services.Configure<ApplicationOptions>(configuration.GetSection(key: nameof(ApplicationOptions)));
 builder.Services.AddTransient<IProductService, ProductService>();
 
 var service = builder.Services.BuildServiceProvider();

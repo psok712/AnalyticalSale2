@@ -14,13 +14,13 @@ public class ProductService : IProductService
     private ApplicationOptions _applicationOptions;
     
     private readonly List<Task> _tasks = new();
-    private readonly List<CancellationTokenSource> _tokensCancel = new();
+    private readonly List<CancellationTokenSource> _tokens = new();
+    private readonly CancellationTokenSource _cancelAllToken = new();
     
-    private readonly Channel<Product> _channelRead = Channel.CreateBounded<Product>(1000);
+    private readonly Channel<Product> _channelRead = Channel.CreateBounded<Product>(100);
     private readonly Channel<ProductDemand> _channelWrite = Channel.CreateBounded<ProductDemand>(1000);
     
-    private readonly object _consoleLock = new();
-    private readonly object _amountCountedLineLock = new();
+    private readonly object _lock = new();
     
     private long _amountReadLine;
     private long _amountWriteLine;
@@ -35,6 +35,19 @@ public class ProductService : IProductService
             _applicationOptions = options;
             UpdateParallelism();
         });
+        
+        Console.CancelKeyPress += (_, e) =>
+        {
+            e.Cancel = true;
+            _cancelAllToken.Cancel();
+            
+            lock (_lock)
+            {
+                Console.WriteLine("The settlement operation has been cancelled.");
+            }
+
+            Environment.Exit(0);
+        };
     }
 
     public async Task ReadFileProductPrediction(string pathProductPrediction)
@@ -57,14 +70,14 @@ public class ProductService : IProductService
                 var line = csv.GetRecord<Product>();
                 await _channelRead.Writer.WriteAsync(line);
                 ++_amountReadLine;
-
-
-                lock (_consoleLock)
+                
+                lock (_lock)
                 {
                     Console.WriteLine($"Product read: {line.Id}. Total read from the {_amountReadLine} product file.");
                 }
             }
-
+            
+            
             _channelRead.Writer.Complete();
         });
     }
@@ -94,7 +107,7 @@ public class ProductService : IProductService
                 await sw.WriteLineAsync($"{product.Id}, {product.Demand}");
                 ++_amountWriteLine;
 
-                lock (_consoleLock)
+                lock (_lock)
                 {
                     Console.WriteLine($"Product recorded: {product}. Total recorded results: {_amountWriteLine}");
                 }
@@ -117,44 +130,37 @@ public class ProductService : IProductService
     {
         for (var i = 0; i < amount; ++i)
         {
+
             CancellationTokenSource cts = new();
-
-            Console.CancelKeyPress += (_, e) =>
-            {
-                e.Cancel = true;
-                cts.Cancel();
-                Console.WriteLine("The settlement operation has been cancelled.");
-                Environment.Exit(0);
-            };
-
-            _tokensCancel.Add(cts);
-
+            _tokens.Add(cts);
+            
             _tasks.Add(Task.Factory.StartNew(async () =>
                 {
-                    while (!cts.IsCancellationRequested && await _channelRead.Reader.WaitToReadAsync(cts.Token))
+                    while (!cts.IsCancellationRequested && await _channelRead.Reader.WaitToReadAsync(_cancelAllToken.Token))
                     {
-                        var product = await _channelRead.Reader.ReadAsync(cts.Token);
+                        var product = await _channelRead.Reader.ReadAsync(_cancelAllToken.Token).ConfigureAwait(false);
                         var demand = product.Prediction - product.Stock > 0
                             ? product.Prediction - product.Stock
                             : 0;
                         var productDemand = new ProductDemand(product.Id, demand);
 
-                        await _channelWrite.Writer.WriteAsync(productDemand, cts.Token);
+                        await _channelWrite.Writer.WriteAsync(productDemand, _cancelAllToken.Token).ConfigureAwait(false);
 
-                        lock (_amountCountedLineLock)
+                        lock (_lock)
                         {
                             ++_countedLine;
-                        }
-
-                        lock (_consoleLock)
-                        {
                             Console.WriteLine($"Product counted: {product.Id}. Total {_countedLine} items counted.");
                         }
 
-                        await Task.Delay(100, cts.Token);
+
+                        await Task.Delay(300, _cancelAllToken.Token).ConfigureAwait(false);
                     }
-                    
-                    _channelWrite.Writer.Complete();
+
+                    if (!cts.IsCancellationRequested)
+                    {
+                        await _cancelAllToken.CancelAsync();
+                        _channelWrite.Writer.Complete();
+                    }
                 },
                 cts.Token,
                 TaskCreationOptions.None,
@@ -168,8 +174,8 @@ public class ProductService : IProductService
         while (amount != 0)
         {
             var taskIndexToCancel = _tasks.Count - 1;
-            _tokensCancel[taskIndexToCancel].Cancel();
-            _tokensCancel.RemoveAt(taskIndexToCancel);
+            _tokens[taskIndexToCancel].Cancel();
+            _tokens.RemoveAt(taskIndexToCancel);
             _tasks.RemoveAt(taskIndexToCancel);
             --amount;
         }
