@@ -1,4 +1,4 @@
-﻿namespace Ozon.AnalyticalSales.Domain.Models;
+﻿namespace AnalyticalSales.Domain.Models;
 
 public record Product(
     long Id,

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Ozon.AnalyticalSales.Domain;
-using Ozon.AnalyticalSales.Domain.Interfaces;
-using Ozon.AnalyticalSales.Service;
+using AnalyticalSales.Domain;
+using AnalyticalSales.Domain.Interfaces;
+using AnalyticalSales.Service;
 
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())

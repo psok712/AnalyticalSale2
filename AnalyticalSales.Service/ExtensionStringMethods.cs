@@ -1,4 +1,4 @@
-﻿namespace Ozon.AnalyticalSales.Service;
+﻿namespace AnalyticalSales.Service;
 
 public static class ExtensionStringMethods
 {

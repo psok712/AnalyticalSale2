@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Ozon.AnalyticalSales.Service\Ozon.AnalyticalSales.Service.csproj"/>
+        <ProjectReference Include="..\AnalyticalSales.Service\AnalyticalSales.Service.csproj" />
     </ItemGroup>
 
     <ItemGroup>

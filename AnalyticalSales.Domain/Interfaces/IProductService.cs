@@ -1,4 +1,4 @@
-﻿namespace Ozon.AnalyticalSales.Domain.Interfaces;
+﻿namespace AnalyticalSales.Domain.Interfaces;
 
 public interface IProductService
 {

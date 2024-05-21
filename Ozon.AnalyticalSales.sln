@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ozon.AnalyticalSales.Domain", "Ozon.AnalyticalSales.Domain\Ozon.AnalyticalSales.Domain.csproj", "{9342BC3A-F83A-4F56-B84B-31DC4E740796}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyticalSales.Domain", "AnalyticalSales.Domain\AnalyticalSales.Domain.csproj", "{9342BC3A-F83A-4F56-B84B-31DC4E740796}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ozon.AnalyticalSales.Service", "Ozon.AnalyticalSales.Service\Ozon.AnalyticalSales.Service.csproj", "{7FFCCBBB-76BA-447B-83B3-93DAA0BD7DCA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyticalSales.Service", "AnalyticalSales.Service\AnalyticalSales.Service.csproj", "{7FFCCBBB-76BA-447B-83B3-93DAA0BD7DCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ozon.AnalyticalSales.Api", "Ozon.AnalyticalSales.Api\Ozon.AnalyticalSales.Api.csproj", "{6E45E0BB-CA5B-4D14-9AEF-58BCB6667181}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyticalSales.Api", "AnalyticalSales.Api\AnalyticalSales.Api.csproj", "{6E45E0BB-CA5B-4D14-9AEF-58BCB6667181}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

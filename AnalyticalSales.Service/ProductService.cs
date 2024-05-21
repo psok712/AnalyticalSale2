@@ -3,11 +3,11 @@ using System.Threading.Channels;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Options;
-using Ozon.AnalyticalSales.Domain;
-using Ozon.AnalyticalSales.Domain.Interfaces;
-using Ozon.AnalyticalSales.Domain.Models;
+using AnalyticalSales.Domain;
+using AnalyticalSales.Domain.Interfaces;
+using AnalyticalSales.Domain.Models;
 
-namespace Ozon.AnalyticalSales.Service;
+namespace AnalyticalSales.Service;
 
 public class ProductService : IProductService
 {

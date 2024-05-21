@@ -1,4 +1,4 @@
-﻿namespace Ozon.AnalyticalSales.Domain;
+﻿namespace AnalyticalSales.Domain;
 
 public record ApplicationOptions
 {
